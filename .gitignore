@@ -1,0 +1,37 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.ipynb_checkpoints/
+
+# Datasets (downloaded / generated -- never commit)
+tumor_segmentation/data/raw/
+tumor_segmentation/data/2D/
+tumor_segmentation/data/nnUNet_raw/
+tumor_segmentation/data/nnUNet_preprocessed/
+dose_prediction/data/open-kbp/
+dose_prediction/data/preprocessed/
+
+# Pretrained weights, checkpoints and run outputs
+tumor_segmentation/pretrained/
+tumor_segmentation/medsam2/checkpoints/*.pt
+tumor_segmentation/runs/
+dose_prediction/runs/
+*.pth
+*.pkl
+*.pt
+*.npz
+*.npy
+*.nii
+*.nii.gz
+*.tar
+*.zip
+
+# OS / editors
+.DS_Store
+.vscode/
+.idea/
+*.swp
+
+# internal verification scripts and logs (not part of the release)
+.dev/
