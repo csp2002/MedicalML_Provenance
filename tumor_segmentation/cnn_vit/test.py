@@ -1,4 +1,4 @@
-"""Evaluate a trained UNet++ / TransUNet run on the test split.
+"""Evaluate a trained TransUNet run on the test split.
 
     python cnn_vit/test.py --run_dir runs/transunet_colon_20260101-120000
     python cnn_vit/test.py --run_dir <run_dir> --ckpt last --save_pred

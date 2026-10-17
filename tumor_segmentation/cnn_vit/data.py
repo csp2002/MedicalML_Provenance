@@ -1,4 +1,4 @@
-"""Slice dataset for the 2D CNN / ViT baselines (UNet++, TransUNet).
+"""Slice dataset for TransUNet.
 
 Each CT slice is min-max normalised to [0, 1] and resized to img_size x img_size
 (cubic for the image, nearest for the mask). Training augmentation follows TransUNet:

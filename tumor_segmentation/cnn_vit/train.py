@@ -1,7 +1,6 @@
-"""Train a 2D tumor-segmentation baseline (UNet++ or TransUNet) on one dataset.
+"""Train TransUNet for 2D tumor segmentation on one dataset.
 
     python cnn_vit/train.py --model transunet --dataset colon
-    python cnn_vit/train.py --model unetpp    --dataset kits --batch_size 24
 
 Recipe (TransUNet defaults): 224x224 input, SGD (momentum 0.9, weight decay 1e-4),
 base lr 0.01 with poly decay, batch 24, 150 epochs, loss = 0.5 * CE + 0.5 * Dice.

@@ -7,7 +7,6 @@ Binary tumor segmentation on the tumor-bearing axial CT slices of four public da
 | **nnU-Net** | CNN (self-configuring U-Net, `3d_fullres`) | random | tumor-only 3D sub-volume | [`nnunet/`](nnunet) |
 | **TransUNet** | ViT (R50 + ViT-B/16 hybrid encoder) | ImageNet-21k | 1 × 224 × 224 slice | [`cnn_vit/`](cnn_vit) |
 | **MedSAM2** | foundation model (SAM2.1 Hiera-T), box-prompted | MedSAM2 weights, LoRA fine-tuning | 3 × 512 × 512 slice + box | [`medsam2/`](medsam2) |
-| UNet++ (optional) | 2D CNN (nested U-Net) | random | 1 × 224 × 224 slice | [`cnn_vit/`](cnn_vit) |
 
 Models are trained and evaluated only on the axial slices that contain tumor, and all models are evaluated on the
 same test slices. nnU-Net works on the 3D stack of tumor slices of a case, the other models on single slices.
@@ -22,7 +21,7 @@ tumor_segmentation/
 │   └── splits/*.json         # fixed case-level train / val / test splits
 ├── common/                   # slice listing, metrics, run bookkeeping (shared)
 ├── nnunet/                   # nnU-Net: prepare_nnunet.py, run_nnunet.sh, evaluate.py
-├── cnn_vit/                  # TransUNet and UNet++: networks/, data.py, train.py, test.py
+├── cnn_vit/                  # TransUNet: networks/, data.py, train.py, test.py
 ├── medsam2/                  # MedSAM2: sam2/ (vendored), lora.py, model.py, data.py, train.py, test.py
 ├── run_all.sh                # train + test every model on every dataset
 └── summarize_results.py      # collect all metrics.json into one table
@@ -63,7 +62,7 @@ data/raw/Task07_Pancreas/{imagesTr,labelsTr}/pancreas_<NNN>.nii.gz
 data/raw/Task10_Colon/{imagesTr,labelsTr}/colon_<NNN>.nii.gz
 ```
 
-### 1.2 2D slices (TransUNet, UNet++, MedSAM2)
+### 1.2 2D slices (TransUNet, MedSAM2)
 
 ```bash
 python data/prepare_2d.py --dataset colon                     # reads data/raw/Task10_Colon
@@ -121,11 +120,10 @@ python nnunet/evaluate.py --dataset colon --pred_dir runs/nnunet_colon_nnUNetTra
 An interrupted training is resumed with `nnUNetv2_train 514 3d_fullres 0 --c`.
 `TRAINER=nnUNetTrainer_5epochs bash nnunet/run_nnunet.sh colon` is a quick functional test.
 
-### 2.2 TransUNet and UNet++
+### 2.2 TransUNet
 
 ```bash
 python cnn_vit/train.py --model transunet --dataset colon    # downloads R50+ViT-B_16.npz (ImageNet-21k) on first use
-python cnn_vit/train.py --model unetpp    --dataset colon    # optional 2D CNN
 ```
 
 | Setting | Value |
@@ -188,7 +186,6 @@ Needs the raw data (nnU-Net), the 2D data and `MedSAM2_latest.pt`:
 ```bash
 CUDA_VISIBLE_DEVICES=0 bash run_all.sh                  # {kits,lits,pancreas,colon} x {nnunet,transunet,medsam2}: train + test
 CUDA_VISIBLE_DEVICES=1 bash run_all.sh colon pancreas   # a subset of the datasets
-MODELS="nnunet transunet medsam2 unetpp" bash run_all.sh  # also the optional UNet++
 python summarize_results.py --csv results.csv           # one table with the test metrics of every run under runs/
 ```
 
@@ -202,11 +199,9 @@ Approximate test slice Dice, to check that a run worked (single runs differ by a
 | TransUNet | ≈ 0.55 | ≈ 0.53 | ≈ 0.24 | ≈ 0.35–0.43 |
 | MedSAM2, LoRA fine-tuned | – | – | – | ≈ 0.88–0.89 |
 | MedSAM2, released weights (zero-shot) | ≈ 0.91 | ≈ 0.71 | ≈ 0.91 | ≈ 0.85 |
-| UNet++ (optional) | ≈ 0.50 | ≈ 0.50 | ≈ 0.24 | ≈ 0.34–0.48 |
 
 * MedSAM2 gets the ground-truth box of each slice as prompt, so its values are not comparable with those of the
   fully automatic models. Fine-tuning should not end below the zero-shot values.
-* UNet++ overfits on colon after about 10 epochs; use `best.pth`.
 
 ## 5. Compute
 
@@ -217,7 +212,6 @@ Measured on shared NVIDIA RTX A6000 GPUs:
 | nnU-Net (3d_fullres) | ~8 GB | 50–80 s per epoch, 1000 epochs: ~14 h (colon) to ~22 h (pancreas) per dataset |
 | TransUNet | ~10 GB (24) | ~16 s per epoch on colon, 150 epochs ≈ 0.7 h |
 | MedSAM2 (LoRA) | ~5 GB (8) | ~70 s per epoch on colon, 70 epochs ≈ 1.4 h |
-| UNet++ | ~12 GB (24) | ~26 s per epoch on colon, 150 epochs ≈ 1.1 h |
 
 For the slice models the epoch time grows with the number of training slices (KiTS has 8.8× as many as colon:
 roughly 6–12 h per model).

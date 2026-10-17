@@ -5,9 +5,8 @@ import urllib.request
 import numpy as np
 
 from .transunet.vit_seg_modeling import CONFIGS, VisionTransformer
-from .unetpp import UNetPlusPlus
 
-MODELS = ("unetpp", "transunet")
+MODELS = ("transunet",)
 
 # ImageNet-21k pre-trained R50+ViT-B/16 released by Google (used to initialise the TransUNet encoder).
 R50_VIT_B16_URL = "https://storage.googleapis.com/vit_models/imagenet21k/R50%2BViT-B_16.npz"
@@ -25,9 +24,7 @@ def _fetch(url, path):
 
 
 def build_model(name, num_classes=2, img_size=224, pretrained=True, pretrained_dir=DEFAULT_PRETRAINED_DIR):
-    """UNet++ is trained from scratch; TransUNet starts from ImageNet-21k R50+ViT-B/16 weights."""
-    if name == "unetpp":
-        return UNetPlusPlus(in_ch=1, num_classes=num_classes)
+    """TransUNet, initialised with the ImageNet-21k R50+ViT-B/16 weights."""
     if name == "transunet":
         config = copy.deepcopy(CONFIGS["R50-ViT-B_16"])
         config.n_classes = num_classes

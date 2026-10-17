@@ -5,7 +5,7 @@
 #
 #   CUDA_VISIBLE_DEVICES=0 bash run_all.sh                 # 12 runs: {kits,lits,pancreas,colon} x {nnunet,transunet,medsam2}
 #   CUDA_VISIBLE_DEVICES=1 bash run_all.sh colon pancreas
-#   MODELS="transunet unetpp" bash run_all.sh colon        # choose the models (unetpp is optional)
+#   MODELS="nnunet transunet" bash run_all.sh colon        # choose the models
 #   python summarize_results.py                            # table of all test results
 set -euo pipefail
 cd "$(dirname "${BASH_SOURCE[0]}")"
@@ -19,7 +19,7 @@ for d in ${DATASETS}; do
         case "${m}" in
             nnunet)
                 bash nnunet/run_nnunet.sh "${d}" ;;
-            transunet|unetpp)
+            transunet)
                 python cnn_vit/train.py --model "${m}" --dataset "${d}"
                 python cnn_vit/test.py --run_dir "$(latest_run "${m}_${d}")" ;;
             medsam2)

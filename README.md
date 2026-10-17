@@ -5,7 +5,7 @@ public data:
 
 | Task | Datasets | Baseline models | Metrics |
 |---|---|---|---|
-| [**Tumor segmentation**](tumor_segmentation/README.md) (tumor-bearing CT slices) | KiTS23 (kidney), LiTS17 (liver), MSD Pancreas, MSD Colon | nnU-Net (CNN), TransUNet (ViT), MedSAM2 (foundation model, LoRA fine-tuning); optional UNet++ (2D CNN) | Dice, IoU |
+| [**Tumor segmentation**](tumor_segmentation/README.md) (tumor-bearing CT slices) | KiTS23 (kidney), LiTS17 (liver), MSD Pancreas, MSD Colon | nnU-Net (CNN), TransUNet (ViT), MedSAM2 (foundation model, LoRA fine-tuning) | Dice, IoU |
 | [**Dose prediction**](dose_prediction/README.md) (3D, head & neck IMRT) | OpenKBP | DoseDiff (conditional diffusion model), C3D (cascade 3D U-Net) | OpenKBP dose score, DVH score |
 
 This gives 12 segmentation training cases (4 datasets × 3 models) and 2 dose-prediction training cases.
@@ -19,7 +19,7 @@ This gives 12 segmentation training cases (4 datasets × 3 models) and 2 dose-pr
 │   ├── data/            download.sh, compute_hu_windows.py, prepare_2d.py, splits/{kits,lits,pancreas,colon}.json
 │   ├── common/          slice listing, metrics, run bookkeeping
 │   ├── nnunet/          nnU-Net on tumor-only 3D sub-volumes (prepare_nnunet.py, run_nnunet.sh, evaluate.py)
-│   ├── cnn_vit/         TransUNet and UNet++ (train.py, test.py)
+│   ├── cnn_vit/         TransUNet (train.py, test.py)
 │   └── medsam2/         MedSAM2 with LoRA (train.py, test.py; vendored sam2 package)
 └── dose_prediction/
     ├── data/            download.sh (OpenKBP)
@@ -89,7 +89,6 @@ Datasets
 
 Models
 * nnU-Net — F. Isensee et al., "nnU-Net: a self-configuring method for deep learning-based biomedical image segmentation", *Nature Methods* 18:203–211, 2021.
-* UNet++ — Z. Zhou et al., "UNet++: A Nested U-Net Architecture for Medical Image Segmentation", DLMIA (MICCAI workshop), 2018.
 * TransUNet — J. Chen et al., "TransUNet: Transformers Make Strong Encoders for Medical Image Segmentation", arXiv:2102.04306, 2021.
 * MedSAM2 — J. Ma et al., "MedSAM2: Segment Anything in 3D Medical Images and Videos", arXiv:2504.03600, 2025; SAM 2 — N. Ravi et al., ICLR 2025.
 * LoRA — E. J. Hu et al., "LoRA: Low-Rank Adaptation of Large Language Models", ICLR 2022.
@@ -104,7 +103,6 @@ This repository is released under the Apache-2.0 license ([LICENSE](LICENSE)). I
 | Component | Source | License | Location |
 |---|---|---|---|
 | TransUNet | [Beckschen/TransUNet](https://github.com/Beckschen/TransUNet) | Apache-2.0 | `tumor_segmentation/cnn_vit/networks/transunet/` |
-| UNet++ implementation | [yhygao/CBIM-Medical-Image-Segmentation](https://github.com/yhygao/CBIM-Medical-Image-Segmentation) | Apache-2.0 | `tumor_segmentation/cnn_vit/networks/unetpp.py` |
 | SAM2 / MedSAM2 (`sam2` package) | [bowang-lab/MedSAM2](https://github.com/bowang-lab/MedSAM2) | Apache-2.0 | `tumor_segmentation/medsam2/sam2/` |
 | DoseDiff | [whisney/DoseDiff](https://github.com/whisney/DoseDiff) | MIT | `dose_prediction/dosediff/`, `dose_prediction/preprocess/` |
 | guided-diffusion | [openai/guided-diffusion](https://github.com/openai/guided-diffusion) | MIT | `dose_prediction/dosediff/guided_diffusion/` |
