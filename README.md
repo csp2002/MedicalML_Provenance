@@ -96,6 +96,7 @@ Models
 * DoseDiff — Y. Zhang et al., "DoseDiff: Distance-Aware Diffusion Model for Dose Prediction in Radiotherapy", *IEEE TMI* 43(10):3621–3633, 2024.
 * C3D — S. Liu et al., "Technical Note: A cascade 3D U-Net for dose prediction in radiotherapy", *Medical Physics* 48(9):5574–5582, 2021.
 
+<!--
 ## Licenses
 
 This repository is released under the Apache-2.0 license ([LICENSE](LICENSE)). It includes code from:
@@ -112,3 +113,4 @@ This repository is released under the Apache-2.0 license ([LICENSE](LICENSE)). I
 
 The license texts are in the respective folders. nnU-Net is installed from PyPI. The datasets remain under their
 own terms (KiTS23: CC BY-NC-SA; MSD: CC-BY-SA 4.0; LiTS and OpenKBP: see the challenge pages).
+-->
