@@ -49,6 +49,8 @@ python preprocess/make_psdm.py       # step 2 (DoseDiff): masks and signed dista
 python preprocess/nii_to_npy.py      # step 3 (DoseDiff): 2D training slices -> data/preprocessed/NPY/ (≈31 GB)
 ```
 
+Step 1 writes 340 patient folders (200 / 40 / 100); step 3 writes 16,456 training and 3,294 validation slices.
+
 Model inputs:
 
 * **DoseDiff**: per axial slice, the CT and a 20-channel condition (fused PTV mask, 8 structure masks and 11 signed

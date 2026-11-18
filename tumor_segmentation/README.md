@@ -48,9 +48,10 @@ bash data/download.sh kits       # KiTS23 repo + its download module -> data/raw
 bash data/download.sh lits       # prints the manual steps (registration required)
 ```
 
-LiTS requires registration: download "Training Batch 1" and "Training Batch 2" from the
-[challenge page](https://competitions.codalab.org/competitions/17094) and put all `volume-*.nii` and
-`segmentation-*.nii` files in `data/raw/LITS17/`. To use another location, set `RAW_DIR=/other/dir` for
+LiTS needs a (free) CodaLab account: register on the
+[challenge page](https://competitions.codalab.org/competitions/17094), download "Training Batch 1" and
+"Training Batch 2" under Participate → Get Data (~50 GB unpacked) and put all `volume-*.nii` and
+`segmentation-*.nii` files directly in `data/raw/LITS17/`. To use another location, set `RAW_DIR=/other/dir` for
 `download.sh` and `run_nnunet.sh`, and pass `--raw_dir /other/dir/<dataset folder>` to the preprocessing scripts.
 
 Expected raw layout:
@@ -77,6 +78,7 @@ the tumor voxels of the training cases (computed by `data/compute_hu_windows.py`
 |---|---|---|---|---|
 | HU window | [-45, 227] | [-52, 167] | [-37, 205] | [-31, 171] |
 
+The script prints the number of slices per split; it should match the table in §1.
 Output (kits 1.8 GB, lits 1.4 GB, pancreas 0.4 GB, colon 0.2 GB):
 
 ```
