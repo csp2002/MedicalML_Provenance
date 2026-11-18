@@ -1,5 +1,6 @@
 # -*- encoding: utf-8 -*-
 # Copied from RTDosePrediction (https://github.com/yangsenwxy/RTDosePrediction), Src/NetworkTrainer/network_trainer.py.
+# Changed: a resumed training appends to log.txt instead of overwriting it.
 import time
 
 import torch
@@ -274,7 +275,7 @@ class NetworkTrainer:
         if self.log.iter == -1:
             self.print_log_to_file('Start training !\n', 'w')
         else:
-            self.print_log_to_file('Continue training !\n', 'w')
+            self.print_log_to_file('Continue training !\n', 'a')
         self.print_log_to_file(time.strftime('Local time: %H:%M:%S\n', time.localtime(time.time())), 'a')
 
         # Start training
