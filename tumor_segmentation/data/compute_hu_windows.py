@@ -1,11 +1,7 @@
-"""Compute the HU window of a dataset from its training cases.
+"""HU window of a dataset: 0.5 / 99.5 percentiles of the CT values of all tumor voxels of the training cases
+(validation and test cases are not used). The windows in prepare_2d.py were computed with this script.
 
-The window is the 0.5 / 99.5 percentile of the CT intensities of all tumor voxels of the training cases
-(``train`` in ``splits/<dataset>.json``; validation and test cases are not used), rounded to whole HU.
-The windows in ``prepare_2d.py`` (``DATASET_CONFIG[...]["intensity_range"]``) were computed with this script.
-
-Example:
-    python data/compute_hu_windows.py --dataset colon --raw_dir data/raw/Task10_Colon
+    python data/compute_hu_windows.py --dataset colon
 """
 import argparse
 import json

@@ -1,9 +1,6 @@
-"""2D slice dataset of the preprocessed OpenKBP data (output of preprocess/nii_to_npy.py).
-
-Each sample is one axial slice: (ct [1,128,128], condition [20,128,128], dose [1,128,128]),
-CT and dose already scaled to [-1, 1]. Training augmentation (DoseDiff): with p=0.8 apply
-shift/scale/rotate (p=0.3; shift 0.1, scale 0.1, rotate +-90 deg, nearest, replicate border),
-horizontal flip (p=0.3) and vertical flip (p=0.3) jointly to all channels.
+"""2D slices of the preprocessed OpenKBP data (preprocess/nii_to_npy.py): (ct [1,128,128], condition [20,128,128],
+dose [1,128,128]), CT and dose scaled to [-1, 1]. Training augmentation (as in DoseDiff): shift / scale / rotate and
+flips, applied jointly to all channels.
 """
 import os
 import warnings
@@ -17,7 +14,7 @@ from torch.utils.data import Dataset
 from model import MASK_CHANNELS, PSDM_CHANNELS, PTV_WEIGHTS
 
 FIELDS = ["ct", "dose"] + list(PTV_WEIGHTS) + MASK_CHANNELS + PSDM_CHANNELS
-# DoseDiff's original augmentation; albumentations>=2 suggests Affine instead but ShiftScaleRotate still works.
+# ShiftScaleRotate (DoseDiff's augmentation) still works in albumentations>=2; silence its deprecation warning.
 warnings.filterwarnings("ignore", message="ShiftScaleRotate is a special case of Affine")
 
 

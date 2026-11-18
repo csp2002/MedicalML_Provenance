@@ -2,10 +2,8 @@
 
     python cnn_vit/train.py --model transunet --dataset colon
 
-Recipe (TransUNet defaults): 224x224 input, SGD (momentum 0.9, weight decay 1e-4),
-base lr 0.01 with poly decay, batch 24, 150 epochs, loss = 0.5 * CE + 0.5 * Dice.
-After every epoch the model is evaluated on the validation split; the checkpoint with
-the best validation Dice is saved as best.pth and the final one as last.pth.
+Defaults: batch 24, 150 epochs, SGD lr 0.01 (poly decay). Validation after every epoch -> best.pth (best Dice)
+and last.pth.
 """
 import argparse
 import csv

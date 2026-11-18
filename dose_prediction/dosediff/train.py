@@ -4,11 +4,8 @@
     torchrun --nproc_per_node=4 train.py --bs 16          # 4 GPUs x 16 = effective batch 64
     torchrun --nproc_per_node=1 train.py --bs 16          # single GPU
 
-Recipe: T = 1000 linear-beta DDPM, epsilon prediction, MSE loss, AdamW (lr 2e-4, weight
-decay 1e-4), lr x0.1 at 70% of training, gradient clipping 1.0, 1600 epochs.
-Every `--val_every` epochs (and after the first and the last epoch) the model samples the validation slices
-with 4-step DDIM and the MAE (Gy) inside the possible-dose mask is logged; model_epoch<N>.pth is
-saved and the lowest-MAE model is kept as model_best_mae.pth.
+Defaults: 1600 epochs, AdamW lr 2e-4. Validation (4-step DDIM, MAE in Gy) after the first epoch, every --val_every
+epochs and after the last: saves model_epoch<N>.pth and keeps the lowest-MAE model as model_best_mae.pth.
 """
 import argparse
 import json
@@ -129,8 +126,7 @@ def main():
                                                           model_kwargs={"ct": ct, "dis": cond}, eta=0.0)
                     dose_gy, pred_gy = (dose + 1) * 40, (pred + 1) * 40
                     body = cond[:, BODY_CHANNEL:BODY_CHANNEL + 1]
-                    # As in the original DoseDiff code: MAE per batch (and rank), averaged over ranks and
-                    # batches -- a close approximation of the voxel-weighted MAE, used only for model selection.
+                    # mean of the per-batch MAEs (as in DoseDiff); used only to pick the best model
                     mae = (torch.abs(dose_gy - pred_gy) * body).sum() / body.sum()
                     dist.all_reduce(mae, op=dist.ReduceOp.SUM)
                     maes.append(mae.item() / world_size)

@@ -7,8 +7,7 @@ HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 DEST="${OPENKBP_DIR:-${HERE}/open-kbp}"   # override the location with OPENKBP_DIR=...
 if [ ! -d "${DEST}" ]; then
     git clone https://github.com/ababier/open-kbp.git "${DEST}"
-    # Commit the pipeline was tested with (the dataset has not changed since the challenge);
-    # an existing folder is used as it is.
+    # the tested commit; an existing folder is reused
     git -C "${DEST}" checkout -q ce625e6
 fi
 for s in train-pats validation-pats test-pats; do

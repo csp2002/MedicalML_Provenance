@@ -1,15 +1,7 @@
-"""Build the nnU-Net (v2) raw dataset for one tumor dataset: tumor-only 3D sub-volumes.
-
-For every case of data/splits/<dataset>.json the CT and label volumes are cropped along the axial axis to the
-slice range [first, last] that contains the tumor (the same slices the 2D baselines use), keeping the affine
-(nibabel slicer), and the label is binarised to {0: background, 1: tumor}.
-
-    <nnunet_raw>/Dataset<ID>_<Name>TO/
-        imagesTr/<case>_0000.nii.gz, labelsTr/<case>.nii.gz     # train + val cases
-        imagesTs/<case>_0000.nii.gz, labelsTs/<case>.nii.gz     # test cases (labelsTs is used by evaluate.py only)
-        dataset.json
-        crop_ranges.json       # first / last axial slice kept for every case
-        splits_final.json      # fold 0 = this repository's train / val split; copied into nnUNet_preprocessed
+"""nnU-Net (v2) raw dataset of one tumor dataset: every case cropped along the axial axis to its first..last tumor
+slice, label binarised (tumor = 1). Writes <nnunet_raw>/Dataset<ID>_<Name>TO/ with imagesTr/labelsTr (train + val),
+imagesTs/labelsTs (test; labelsTs is used only by evaluate.py), dataset.json, crop_ranges.json and
+splits_final.json (fold 0 = this repository's train / val split).
 
     python nnunet/prepare_nnunet.py --dataset colon
 """

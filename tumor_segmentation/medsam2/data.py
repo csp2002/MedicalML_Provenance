@@ -1,12 +1,6 @@
-"""Slice dataset for MedSAM2 (box-prompted 2D segmentation).
-
-Each 8-bit CT slice is replicated to 3 channels, resized to 512x512 (cubic) and
-normalised with the ImageNet mean/std used by SAM2. The box prompt is the tight
-bounding box of the ground-truth tumor mask of the slice (one box around all tumor
-pixels); with bbox_shift > 0 every side is enlarged by a random 0-`bbox_shift` pixels.
-Training augmentation: horizontal flip (p=0.5), random affine (rotation +-25 deg,
-shear +-20 deg), colour jitter (brightness 0.1, contrast 0.03, saturation 0.03) and
-random grayscale (p=0.05).
+"""Slice dataset for MedSAM2: CT slice as 3 channels, resized to 512x512, ImageNet mean/std. The box prompt is the
+bounding box of all tumor pixels of the slice (bbox_shift > 0 enlarges each side by a random 0-bbox_shift pixels).
+Training augmentation: flip, random affine, colour jitter, random grayscale.
 """
 import random
 

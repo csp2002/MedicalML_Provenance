@@ -1,15 +1,8 @@
-"""Step 3/3 of the OpenKBP preprocessing: 3D volumes -> normalised 2D axial slices (.npy) for training.
-
-Only slices where the possible-dose mask is non-empty are kept. Normalisation:
-    CT:   clip to [0, 2500], then x / 1250 - 1   -> [-1, 1]
-    dose: clip to [0, 80] Gy, then x / 40 - 1    -> [-1, 1]
-    Mask_* and PSDM_* channels are stored unchanged.
+"""Step 3/3 of the OpenKBP preprocessing: 3D volumes -> 2D axial slices (.npy) for DoseDiff; CT and dose scaled to [-1, 1].
 
 Reads   <data_dir>/{train,validation}-pats_preprocess/pt_*/
-Writes  <data_dir>/NPY/{train,validation}/<field>/<pt>_<slice>.npy   (24 fields)
-
-The test split is evaluated directly from the 3D volumes (dosediff/test.py), so it is not
-converted unless requested with --splits train validation test.
+Writes  <data_dir>/NPY/{train,validation}/<field>/<pt>_<slice>.npy
+The test split is read from the 3D volumes by dosediff/test.py (add --splits train validation test to convert it too).
 
 (Adapted from DoseDiff's NII_to_npy.py, https://github.com/whisney/DoseDiff, MIT.)
 """

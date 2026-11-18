@@ -1,16 +1,11 @@
-"""Fine-tune MedSAM2 (box-prompted) on the 2D tumor slices of one dataset with LoRA.
+"""Fine-tune MedSAM2 with LoRA on the 2D tumor slices of one dataset (box prompt = ground-truth tumor box).
 
     python medsam2/train.py --dataset colon
 
-Recipe: MedSAM2_latest.pt (SAM2.1 Hiera-T, 512x512 input) as initialisation; rank-4 LoRA
-(alpha 4) on the q/v projections of all Hiera blocks, the rest of the image encoder frozen;
-prompt encoder and mask decoder fully trainable. AdamW (weight decay 0.01), lr 1e-3 for the
-LoRA adapters and 5e-5 for prompt encoder + mask decoder, batch 8, 70 epochs.
-Loss = 20 * focal (alpha 0.25, gamma 2) + 1 * Dice on the single-mask output, upsampled to 512x512.
-Box prompt = tight GT tumor box of the slice, the same as at test time (--bbox_shift > 0 adds random enlargement).
-After every epoch the model is evaluated on the validation split (tight GT boxes); the best
-validation Dice checkpoint is saved as best.pth, the final one as last.pth. Checkpoints hold
-MedSAM2 weights with the LoRA adapters merged in (same format as MedSAM2_latest.pt).
+Recipe: start from MedSAM2_latest.pt; LoRA (rank 4, alpha 4) on q/v of the image encoder, prompt encoder and mask
+decoder trained; AdamW, lr 1e-3 (LoRA) / 5e-5 (decoder); loss 20 * focal + Dice; batch 8, 70 epochs.
+Validation after every epoch -> best.pth (best Dice) and last.pth, with the LoRA weights merged in
+(same format as MedSAM2_latest.pt).
 """
 import argparse
 import csv

@@ -14,8 +14,7 @@ RAW="${RAW_DIR:-$HERE/raw}"
 mkdir -p "$RAW"
 
 msd() {
-    # The Medical Segmentation Decathlon archives, mirrored on AWS by the MONAI project
-    # (the same files that are distributed on http://medicaldecathlon.com/, licence CC-BY-SA 4.0).
+    # MSD archives from the AWS mirror of the MONAI project (the same files as on http://medicaldecathlon.com/)
     local task="$1" md5="$2"
     local url="https://msd-for-monai.s3-us-west-2.amazonaws.com/${task}.tar"
     echo "Downloading ${url} -> ${RAW}/${task}.tar"
@@ -35,10 +34,8 @@ case "${1:-}" in
         msd Task07_Pancreas 4f7080cfca169fa8066d17ce6eb061e4
         ;;
     kits)
-        # Official KiTS23 repository, cloned at the tested commit c108835 (2026-05-13); an existing kits23 folder is
-        # used as it is. The segmentations are part of the git repository; its download module fetches the CT volumes
-        # (from Hugging Face) into kits23/dataset/case_XXXXX/imaging.nii.gz. The module only needs tqdm, so the kits23
-        # package (and its extra dependencies) is not installed.
+        # Official KiTS23 repository at the tested commit; its download module fetches the CT volumes (Hugging Face)
+        # into kits23/dataset/case_XXXXX/imaging.nii.gz. An existing kits23 folder is reused.
         if [ ! -d "${RAW}/kits23" ]; then
             git clone https://github.com/neheller/kits23 "${RAW}/kits23"
             git -C "${RAW}/kits23" checkout -q c108835

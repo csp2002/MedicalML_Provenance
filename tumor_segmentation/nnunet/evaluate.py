@@ -1,10 +1,7 @@
-"""Score nnU-Net test predictions with the same slice-level metrics as the 2D baselines.
+"""Score nnU-Net test predictions like the 2D models: Dice / IoU on every tumor slice of the test cases (the slices of
+data/2D/<dataset>/test), plus the 3D Dice of the sub-volume (dice3d_mean). run_nnunet.sh calls it itself.
 
-Every axial slice of a test case that contains tumor in the ground truth is scored (Dice / IoU at the original
-resolution, see common/metrics.py), i.e. exactly the slices of data/2D/<dataset>/test. The 3D Dice over the
-whole tumor-only sub-volume is reported as well (`dice3d_mean`).
-
-    python nnunet/evaluate.py --dataset colon --pred_dir runs/nnunet_colon/pred_test --out_dir runs/nnunet_colon/eval_test
+    python nnunet/evaluate.py --dataset colon --pred_dir <run_dir>/pred_test --out_dir <run_dir>/eval_test
 """
 import argparse
 import json

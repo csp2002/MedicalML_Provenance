@@ -65,19 +65,12 @@ cd dose_prediction
 bash data/download.sh                                         # OpenKBP -> data/open-kbp
 python preprocess/csv_to_nii.py && python preprocess/make_psdm.py && python preprocess/nii_to_npy.py
 cd dosediff
-torchrun --nproc_per_node=4 train.py --bs 16                  # -> ../runs/dosediff_T1000_bs64_ep1600_<timestamp>/
+torchrun --nproc_per_node=4 train.py --bs 16                  # 4 GPUs -> ../runs/dosediff_T1000_bs64_ep1600_<timestamp>/
 python test.py --run_dir ../runs/dosediff_T1000_bs64_ep1600_<timestamp> --tta
 cd ../c3d                                                     # C3D needs only preprocess/csv_to_nii.py
 python train.py                                               # -> ../runs/c3d_bs2_it80000_<timestamp>/
 python test.py --run_dir ../runs/c3d_bs2_it80000_<timestamp> --tta
 ```
-
-## Outputs
-
-Each training run writes a folder under `runs/` with its configuration (`config.json`: arguments and environment),
-training log and checkpoints. Each test writes `metrics.json`, per-slice or per-patient
-results (CSV) and the predictions. `prepare_2d.py` records its parameters (`prepare_config.json`) and the source
-volume of every slice (`<split>_slices.csv`).
 
 ## References
 

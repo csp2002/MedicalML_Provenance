@@ -1,9 +1,5 @@
-"""Building MedSAM2 and running it on a batch of 2D slices with box prompts.
-
-`predict_logits` reproduces the single-image path of SAM2's `SAM2ImagePredictor`
-(image embedding + `no_mem_embed`, box given as two corner points with labels 2/3,
-single-mask output) in a batched, differentiable form, so the exact same forward pass
-is used for fine-tuning and for inference.
+"""Builds MedSAM2 and runs it on a batch of 2D slices with box prompts. `predict_logits` is the single-image path of
+SAM2's `SAM2ImagePredictor` in batched, differentiable form, so training and inference use the same forward pass.
 """
 import os
 import sys

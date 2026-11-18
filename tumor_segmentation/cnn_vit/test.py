@@ -3,9 +3,7 @@
     python cnn_vit/test.py --run_dir runs/transunet_colon_20260101-120000
     python cnn_vit/test.py --run_dir <run_dir> --ckpt last --save_pred
 
-Predictions are made at the network resolution (224x224), resized back to the original
-slice size (nearest neighbour) and compared with the original mask. Writes
-<run_dir>/eval_<split>_<ckpt>/{metrics.json, per_slice.csv[, predictions/]}.
+Writes <run_dir>/eval_<split>_<ckpt>/{metrics.json, per_slice.csv[, predictions/]}.
 """
 import argparse
 import json

@@ -1,20 +1,10 @@
-"""Convert raw 3D CT volumes (NIfTI) into the 2D slice dataset used by every
-tumor-segmentation baseline in this repository.
+"""Raw 3D CT volumes (NIfTI) -> 2D tumor-slice dataset used by TransUNet and MedSAM2.
 
-For each case listed in ``splits/<dataset>.json`` the script
-  1. loads the CT volume and its label map,
-  2. reorders the axes so that axis 0 is the axial (slice) axis,
-  3. binarises the label map to the tumor class of the dataset,
-  4. clips the CT intensities to a dataset-specific window and rescales to [0, 1],
-  5. writes every axial slice that contains tumor as a pair of PNG files
-     ``<out_dir>/<split>/CT/<case>/<slice>.png`` and ``<out_dir>/<split>/Mask/<case>/<slice>.png``.
+For every case of splits/<dataset>.json, each axial slice that contains tumor is written as a CT PNG (clipped to the
+dataset's HU window, scaled to [0, 1]) and a binary tumor-mask PNG under <out_dir>/<split>/{CT,Mask}/<case>/.
+<split>_slices.csv lists every slice with its source volume; prepare_config.json records the parameters.
 
-It also writes ``<out_dir>/<split>_slices.csv`` (one row per saved slice) and
-``<out_dir>/prepare_config.json`` (the exact parameters used), so the lineage of
-every training slice can be traced back to its source volume.
-
-Example:
-    python data/prepare_2d.py --dataset colon --raw_dir data/raw/Task10_Colon
+    python data/prepare_2d.py --dataset colon
 """
 import argparse
 import csv
@@ -32,9 +22,8 @@ import numpy as np  # noqa: E402
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 
-# Per-dataset preprocessing parameters.
-#   intensity_range: HU window = 0.5 / 99.5 percentiles of the CT values of the tumor voxels of the training
-#                    cases, rounded to whole HU (computed by compute_hu_windows.py; val / test cases not used)
+# Per-dataset parameters.
+#   intensity_range: HU window (0.5 / 99.5 percentiles of the tumor voxels of the training cases, compute_hu_windows.py)
 #   spatial_index:   axis permutation that brings the axial axis to position 0
 #   target_class:    label value of the tumor in the raw label map
 DATASET_CONFIG = {
@@ -77,9 +66,8 @@ def process_case(job):
         n_tumor = int(seg_slice.sum())
         if n_tumor == 0:  # only slices that contain tumor are kept
             continue
-        # plt.imsave rescales each slice to its own [min, max] and writes an RGBA PNG;
-        # the loaders read it back as 8-bit grayscale. This is how the original project wrote its
-        # slices; only the HU windows differ (computed from the training cases here).
+        # plt.imsave stretches each slice to its own [min, max] and writes an RGBA PNG;
+        # the loaders read it back as 8-bit grayscale.
         plt.imsave(os.path.join(ct_dir, f"{j:03d}.png"), img[j], cmap="gray")
         plt.imsave(os.path.join(mask_dir, f"{j:03d}.png"), seg_slice, cmap="gray")
         rows.append(dict(split=split, case=case, slice_index=j,

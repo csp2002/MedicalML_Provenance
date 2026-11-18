@@ -162,7 +162,7 @@ def inference(trainer, list_patient_dirs, save_path, do_TTA=True):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument('--run_dir', default=None, help='output folder of train.py')
     parser.add_argument('--ckpt', default='best_val_evaluation_index.pkl',
                         help='file name inside --run_dir, or a full path')

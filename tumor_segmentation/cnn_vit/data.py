@@ -1,9 +1,6 @@
-"""Slice dataset for TransUNet.
-
-Each CT slice is min-max normalised to [0, 1] and resized to img_size x img_size
-(cubic for the image, nearest for the mask). Training augmentation follows TransUNet:
-with p=0.5 a random 90-degree rotation + flip, otherwise with p=0.5 a random rotation
-in [-20, 20) degrees (0.25 overall).
+"""Slice dataset for TransUNet: CT slice min-max normalised to [0, 1] and resized to img_size x img_size.
+Training augmentation (as in TransUNet): random 90-degree rotation + flip (p = 0.5), else a random rotation in
+[-20, 20) degrees (p = 0.5).
 """
 import random
 

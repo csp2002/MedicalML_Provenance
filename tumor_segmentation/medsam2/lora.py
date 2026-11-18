@@ -1,16 +1,6 @@
-"""LoRA adapters for the Hiera image encoder of MedSAM2 (SAM2.1 Hiera-T).
-
-Rank-r adapters are added to the query and value slices of every Hiera block's fused
-`attn.qkv` projection (the key slice is left untouched); the rest of the encoder is frozen.
-B is zero-initialised, so at step 0 the adapted model is exactly the pretrained model.
-
-Hiera is hierarchical: its blocks run 96 -> 192 -> 384 -> 768 channels and at each stage
-transition the qkv projection itself changes width (e.g. Linear(96, 576)), so the adapter
-output width is read per block as qkv.out_features // 3 rather than assumed equal to the
-input width.
-
-`merged_state_dict` folds every adapter back into its base weight under the original key
-names, so a fine-tuned checkpoint loads into a plain MedSAM2 model with no extra code.
+"""LoRA adapters on the query and value parts of every Hiera block's `attn.qkv` projection (MedSAM2 image encoder);
+the rest of the encoder is frozen. `merged_state_dict` folds the adapters back into the weights, so a fine-tuned
+checkpoint loads into a plain MedSAM2 model.
 """
 import torch
 import torch.nn as nn

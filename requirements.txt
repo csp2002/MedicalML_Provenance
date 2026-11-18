@@ -1,9 +1,5 @@
-# Python dependencies for every pipeline in this repository (tumor segmentation + dose prediction).
-# Install PyTorch first with the wheel that matches your CUDA driver, e.g.
-#   pip install torch==2.5.1 torchvision==0.20.1 --index-url https://download.pytorch.org/whl/cu124
-# then:
-#   pip install -r requirements.txt
-# Pinned to the versions the code was tested with (Python 3.10.21, torch 2.5.1, torchvision 0.20.1).
+# Install PyTorch first (see README.md), then: pip install -r requirements.txt
+# Tested with Python 3.10, torch 2.5.1, torchvision 0.20.1.
 
 # numerics / IO
 numpy==2.2.6

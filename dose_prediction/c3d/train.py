@@ -27,7 +27,7 @@ from online_evaluation import online_evaluation  # noqa: E402
 from loss import Loss  # noqa: E402
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument('--batch_size', type=int, default=2,
                         help='batch size for training (default: 2)')
     parser.add_argument('--list_GPU_ids', nargs='+', type=int, default=[0],
@@ -75,7 +75,7 @@ if __name__ == '__main__':
     trainer.set_optimizer(optimizer_type='Adam',
                           args={
                               'lr': 3e-4,
-                              'weight_decay': 1e-4
+                              'weight_decay': 1e-4  # not used for C3D: set_optimizer applies 3e-5 with AMSGrad
                           }
                           )
 

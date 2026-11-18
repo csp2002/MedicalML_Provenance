@@ -1,7 +1,7 @@
 # Radiotherapy dose prediction (OpenKBP: DoseDiff, C3D)
 
 Predict the 3D dose distribution (Gy) of a head-and-neck IMRT plan from the planning CT and the contours of the
-targets and organs at risk:
+targets and organs at risk, with two baselines:
 
 | Model | Family | Input | Code |
 |---|---|---|---|
@@ -24,7 +24,7 @@ dose_prediction/
 │   ├── guided_diffusion/        # diffusion code + UNetModel_MS_Former (vendored from DoseDiff / OpenAI guided-diffusion)
 │   ├── model.py                 # network / schedule / conditioning channels
 │   └── dataset.py, train.py, test.py
-└── c3d/                         # C3D, copied from RTDosePrediction (authors' code)
+└── c3d/                         # C3D, copied from the C3D authors' RTDosePrediction
     ├── model.py, loss.py, online_evaluation.py, train.py, test.py
     └── DataLoader/, DataAugmentation/, NetworkTrainer/
 ```
@@ -51,13 +51,6 @@ python preprocess/nii_to_npy.py      # step 3 (DoseDiff): 2D training slices -> 
 
 Step 1 writes 340 patient folders (200 / 40 / 100); step 3 writes 16,456 training and 3,294 validation slices.
 
-Model inputs:
-
-* **DoseDiff**: per axial slice, the CT and a 20-channel condition (fused PTV mask, 8 structure masks and 11 signed
-  distance maps); CT and dose are scaled to [−1, 1].
-* **C3D**: the whole volume with 9 channels: fused PTV mask (`PTV70 + 63/70·PTV63 + 56/70·PTV56`), 7 OAR masks and
-  the CT (HU clipped to [−1024, 1500], divided by 1000); the target is the dose divided by 70 Gy.
-
 ## 3. Training
 
 ### 3.1 DoseDiff
@@ -66,6 +59,8 @@ Model inputs:
 cd dosediff
 torchrun --nproc_per_node=4 train.py --bs 16      # 4 GPUs x 16 = effective batch 64
 ```
+
+`--nproc_per_node` is the number of GPUs; the effective batch (`bs<batch>` in the run-folder name) is GPUs × `--bs`.
 
 | Setting | Value |
 |---|---|
@@ -97,8 +92,8 @@ python train.py --batch_size 4 --list_GPU_ids 0 1   # batch 4 on two GPUs
 | Validation | every 500 iterations (dose score of the 40 validation patients) → `best_val_evaluation_index.pkl` |
 
 Each run writes `runs/c3d_bs<batch>_it<iterations>_<timestamp>/` (`config.json`, `log.txt` with the validation dose
-scores, `best_val_evaluation_index.pkl`, `latest.pkl`); `python train.py --resume <run_dir>/latest.pkl` continues
-an interrupted run.
+scores, `best_val_evaluation_index.pkl`, `latest.pkl`); `python train.py --resume <run_dir>/latest.pkl` (with the
+run's other arguments) continues an interrupted run.
 
 ## 4. Testing
 
@@ -127,6 +122,6 @@ Test split (100 patients) with TTA; lower is better:
 | | Dose score (Gy) | DVH score (Gy) | Training | Testing |
 |---|---|---|---|---|
 | DoseDiff | ≈ 2.6–2.7 | ≈ 1.5–1.6 | ≈ 60 h on 4 × RTX A6000 | ≈ 2 h on one RTX A6000 |
-| C3D | ≈ 2.5 | ≈ 1.5 | ≈ 18 GB GPU memory at batch 2; the authors report ≈ 50 h on two GTX 1080 Ti | ≈ 17 min on CPU (32 threads) |
+| C3D (the authors' published model) | ≈ 2.5 | ≈ 1.5 | ≈ 18 GB GPU memory at batch 2; ≈ 50 h on two GTX 1080 Ti (reported by the C3D authors) | ≈ 17 min on CPU (`--GPU_id -1`, 32 threads) |
 
 The best validation MAE of DoseDiff in `val_history.csv` is about 2.5 Gy.

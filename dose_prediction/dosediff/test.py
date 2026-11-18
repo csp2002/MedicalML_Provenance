@@ -1,15 +1,11 @@
-"""Predict 3D dose distributions with a trained DoseDiff model and score them with the OpenKBP metrics.
+"""Predict the dose of every test patient with a trained DoseDiff model and score it with the OpenKBP metrics.
 
     cd dose_prediction/dosediff
     python test.py --run_dir ../runs/dosediff_T1000_bs64_ep1600_20260101-120000 --tta
     python test.py --ckpt /path/to/model_best_mae.pth --out_dir ../runs/eval_x --split validation
 
-Every axial slice of a patient is sampled with DDIM (default 8 steps, eta = 0) conditioned on
-its CT and 20-channel structure condition; with --tta the prediction is averaged over 4 flips
-(none / vertical / horizontal / both). The volume is mapped back to Gy ((x + 1) * 40), clipped to
-[0, 80] and zeroed outside the possible-dose mask, saved as NIfTI and scored against the
-reference dose (dose score and DVH score, see ../common/evaluate_openkbp.py).
-Writes <out_dir>/{predictions/pt_*/dose.nii.gz, metrics.json, per_patient.csv}.
+Each axial slice is sampled with DDIM (8 steps by default); --tta averages over 4 flips. The dose (Gy) is zeroed
+outside the possible-dose mask. Writes <out_dir>/{predictions/pt_*/dose.nii.gz, metrics.json, per_patient.csv}.
 """
 import argparse
 import csv

@@ -35,3 +35,4 @@ dose_prediction/runs/
 
 # internal verification scripts and logs (not part of the release)
 .dev/
+.omc/

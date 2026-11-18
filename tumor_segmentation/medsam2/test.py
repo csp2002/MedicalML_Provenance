@@ -1,12 +1,10 @@
-"""Evaluate MedSAM2 on the test split with ground-truth box prompts.
+"""Evaluate MedSAM2 on the test split; the box prompt of each slice is the bounding box of its ground-truth tumor mask.
 
     # fine-tuned model (output folder of medsam2/train.py)
     python medsam2/test.py --run_dir runs/medsam2_colon_20260101-120000
     # released MedSAM2 weights without fine-tuning (zero-shot)
     python medsam2/test.py --dataset colon --checkpoint medsam2/checkpoints/MedSAM2_latest.pt --out_dir runs/medsam2_zeroshot_colon
 
-The prompt of each slice is the tight bounding box of its ground-truth tumor mask. The
-low-resolution mask logits are upsampled to the original slice size and thresholded at 0.
 Writes <out_dir>/{metrics.json, per_slice.csv[, predictions/]}.
 """
 import argparse
